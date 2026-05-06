@@ -1,10 +1,11 @@
-import { and, desc, eq, ilike, inArray, or } from "drizzle-orm";
+import { and, asc, desc, eq, ilike, inArray, isNull, or } from "drizzle-orm";
 import db, { schema } from "@/database";
 import { secretManager } from "@/secrets-manager";
 import {
   ENTERPRISE_MANAGED_CLIENT_SECRET_OVERRIDE_SECRET_KEY,
   type InsertInternalMcpCatalog,
   type InternalMcpCatalog,
+  type PresetFieldValues,
   type UpdateInternalMcpCatalog,
 } from "@/types";
 import McpCatalogLabelModel from "./mcp-catalog-label";
@@ -64,15 +65,21 @@ class InternalMcpCatalogModel {
     userId?: string;
     isAdmin?: boolean;
     organizationId?: string;
+    includeChildren?: boolean;
   }): Promise<InternalMcpCatalog[]> {
     const {
       expandSecrets = true,
       userId,
       isAdmin,
       organizationId,
+      includeChildren = false,
     } = options ?? {};
 
     let dbItems: Array<typeof schema.internalMcpCatalogTable.$inferSelect>;
+
+    const parentOnlyCondition = includeChildren
+      ? undefined
+      : isNull(schema.internalMcpCatalogTable.parentCatalogItemId);
 
     if (userId && !isAdmin && !organizationId) {
       return [];
@@ -86,16 +93,23 @@ class InternalMcpCatalogModel {
           organizationId,
         );
       if (accessibleIds.length === 0) return [];
+      const where = parentOnlyCondition
+        ? and(
+            inArray(schema.internalMcpCatalogTable.id, accessibleIds),
+            parentOnlyCondition,
+          )
+        : inArray(schema.internalMcpCatalogTable.id, accessibleIds);
       dbItems = await db
         .select()
         .from(schema.internalMcpCatalogTable)
-        .where(inArray(schema.internalMcpCatalogTable.id, accessibleIds))
+        .where(where)
         .orderBy(desc(schema.internalMcpCatalogTable.createdAt));
     } else {
-      dbItems = await db
-        .select()
-        .from(schema.internalMcpCatalogTable)
-        .orderBy(desc(schema.internalMcpCatalogTable.createdAt));
+      const baseQuery = db.select().from(schema.internalMcpCatalogTable);
+      dbItems = await (parentOnlyCondition
+        ? baseQuery.where(parentOnlyCondition)
+        : baseQuery
+      ).orderBy(desc(schema.internalMcpCatalogTable.createdAt));
     }
 
     const catalogItems =
@@ -117,6 +131,7 @@ class InternalMcpCatalogModel {
       userId?: string;
       isAdmin?: boolean;
       organizationId?: string;
+      includeChildren?: boolean;
     },
   ): Promise<InternalMcpCatalog[]> {
     const {
@@ -124,14 +139,22 @@ class InternalMcpCatalogModel {
       userId,
       isAdmin,
       organizationId,
+      includeChildren = false,
     } = options ?? {};
 
     let dbItems: Array<typeof schema.internalMcpCatalogTable.$inferSelect>;
 
-    const searchCondition = or(
+    const baseSearchCondition = or(
       ilike(schema.internalMcpCatalogTable.name, `%${query}%`),
       ilike(schema.internalMcpCatalogTable.description, `%${query}%`),
     );
+
+    const searchCondition = includeChildren
+      ? baseSearchCondition
+      : and(
+          baseSearchCondition,
+          isNull(schema.internalMcpCatalogTable.parentCatalogItemId),
+        );
 
     if (userId && !isAdmin && !organizationId) {
       return [];
@@ -354,6 +377,48 @@ class InternalMcpCatalogModel {
     };
     await InternalMcpCatalogModel.populateAuthorNames([result]);
     return result;
+  }
+
+  /**
+   * List child catalog items ("presets") for a given parent.
+   */
+  static async findChildren(parentId: string): Promise<InternalMcpCatalog[]> {
+    const dbItems = await db
+      .select()
+      .from(schema.internalMcpCatalogTable)
+      .where(eq(schema.internalMcpCatalogTable.parentCatalogItemId, parentId))
+      .orderBy(asc(schema.internalMcpCatalogTable.createdAt));
+
+    return InternalMcpCatalogModel.attachLabelsAndTeams(dbItems);
+  }
+
+  /**
+   * Validate a `presetFieldValues` payload against a parent's userConfig and
+   * localConfig.environment field-scope flags. Only fields flagged
+   * `promptOnPreset: true` are allowed; throws an Error listing offenders
+   * when any other key is present.
+   */
+  static validateFieldValuesAgainstCatalog(
+    parent: InternalMcpCatalog,
+    fieldValues: PresetFieldValues | undefined,
+  ): void {
+    if (!fieldValues) return;
+    const presetKeys = new Set<string>();
+    for (const [key, field] of Object.entries(parent.userConfig ?? {})) {
+      if (field.promptOnPreset) presetKeys.add(key);
+    }
+    for (const env of parent.localConfig?.environment ?? []) {
+      if (env.promptOnPreset) presetKeys.add(env.key);
+    }
+
+    const offenders = Object.keys(fieldValues).filter(
+      (key) => !presetKeys.has(key),
+    );
+    if (offenders.length > 0) {
+      throw new Error(
+        `Fields not configured for preset overrides: ${offenders.join(", ")}`,
+      );
+    }
   }
 
   static async delete(id: string): Promise<boolean> {
