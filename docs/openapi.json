@@ -100497,91 +100497,6 @@
                           "$ref": "#/components/schemas/UserConfigField"
                         }
                       },
-                      "mappingTemplates": {
-                        "default": [],
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "template": {
-                              "type": "string",
-                              "minLength": 1
-                            },
-                            "target": {
-                              "oneOf": [
-                                {
-                                  "type": "object",
-                                  "properties": {
-                                    "kind": {
-                                      "type": "string",
-                                      "enum": [
-                                        "header"
-                                      ]
-                                    },
-                                    "name": {
-                                      "type": "string",
-                                      "minLength": 1
-                                    },
-                                    "valuePrefix": {
-                                      "type": "string"
-                                    }
-                                  },
-                                  "required": [
-                                    "kind",
-                                    "name"
-                                  ],
-                                  "additionalProperties": false
-                                },
-                                {
-                                  "type": "object",
-                                  "properties": {
-                                    "kind": {
-                                      "type": "string",
-                                      "enum": [
-                                        "env-var"
-                                      ]
-                                    },
-                                    "name": {
-                                      "type": "string",
-                                      "minLength": 1
-                                    }
-                                  },
-                                  "required": [
-                                    "kind",
-                                    "name"
-                                  ],
-                                  "additionalProperties": false
-                                },
-                                {
-                                  "type": "object",
-                                  "properties": {
-                                    "kind": {
-                                      "type": "string",
-                                      "enum": [
-                                        "secret-file"
-                                      ]
-                                    },
-                                    "path": {
-                                      "type": "string",
-                                      "minLength": 1
-                                    }
-                                  },
-                                  "required": [
-                                    "kind",
-                                    "path"
-                                  ],
-                                  "additionalProperties": false
-                                }
-                              ]
-                            }
-                          },
-                          "required": [
-                            "template",
-                            "target"
-                          ],
-                          "additionalProperties": false
-                        }
-                      },
                       "oauthConfig": {
                         "nullable": true,
                         "type": "object",
@@ -100882,7 +100797,6 @@
                       "localConfig",
                       "deploymentSpecYaml",
                       "userConfig",
-                      "mappingTemplates",
                       "oauthConfig",
                       "enterpriseManagedConfig",
                       "icon",
@@ -101427,86 +101341,6 @@
                     "type": "object",
                     "additionalProperties": {
                       "$ref": "#/components/schemas/UserConfigFieldInput"
-                    }
-                  },
-                  "mappingTemplates": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "template": {
-                          "type": "string",
-                          "minLength": 1
-                        },
-                        "target": {
-                          "oneOf": [
-                            {
-                              "type": "object",
-                              "properties": {
-                                "kind": {
-                                  "type": "string",
-                                  "enum": [
-                                    "header"
-                                  ]
-                                },
-                                "name": {
-                                  "type": "string",
-                                  "minLength": 1
-                                },
-                                "valuePrefix": {
-                                  "type": "string"
-                                }
-                              },
-                              "required": [
-                                "kind",
-                                "name"
-                              ]
-                            },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "kind": {
-                                  "type": "string",
-                                  "enum": [
-                                    "env-var"
-                                  ]
-                                },
-                                "name": {
-                                  "type": "string",
-                                  "minLength": 1
-                                }
-                              },
-                              "required": [
-                                "kind",
-                                "name"
-                              ]
-                            },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "kind": {
-                                  "type": "string",
-                                  "enum": [
-                                    "secret-file"
-                                  ]
-                                },
-                                "path": {
-                                  "type": "string",
-                                  "minLength": 1
-                                }
-                              },
-                              "required": [
-                                "kind",
-                                "path"
-                              ]
-                            }
-                          ]
-                        }
-                      },
-                      "required": [
-                        "template",
-                        "target"
-                      ]
                     }
                   },
                   "oauthConfig": {
@@ -102065,91 +101899,6 @@
                         "$ref": "#/components/schemas/UserConfigField"
                       }
                     },
-                    "mappingTemplates": {
-                      "default": [],
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "template": {
-                            "type": "string",
-                            "minLength": 1
-                          },
-                          "target": {
-                            "oneOf": [
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "kind": {
-                                    "type": "string",
-                                    "enum": [
-                                      "header"
-                                    ]
-                                  },
-                                  "name": {
-                                    "type": "string",
-                                    "minLength": 1
-                                  },
-                                  "valuePrefix": {
-                                    "type": "string"
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "name"
-                                ],
-                                "additionalProperties": false
-                              },
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "kind": {
-                                    "type": "string",
-                                    "enum": [
-                                      "env-var"
-                                    ]
-                                  },
-                                  "name": {
-                                    "type": "string",
-                                    "minLength": 1
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "name"
-                                ],
-                                "additionalProperties": false
-                              },
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "kind": {
-                                    "type": "string",
-                                    "enum": [
-                                      "secret-file"
-                                    ]
-                                  },
-                                  "path": {
-                                    "type": "string",
-                                    "minLength": 1
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "path"
-                                ],
-                                "additionalProperties": false
-                              }
-                            ]
-                          }
-                        },
-                        "required": [
-                          "template",
-                          "target"
-                        ],
-                        "additionalProperties": false
-                      }
-                    },
                     "oauthConfig": {
                       "nullable": true,
                       "type": "object",
@@ -102450,7 +102199,6 @@
                     "localConfig",
                     "deploymentSpecYaml",
                     "userConfig",
-                    "mappingTemplates",
                     "oauthConfig",
                     "enterpriseManagedConfig",
                     "icon",
@@ -103020,91 +102768,6 @@
                         "$ref": "#/components/schemas/UserConfigField"
                       }
                     },
-                    "mappingTemplates": {
-                      "default": [],
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "template": {
-                            "type": "string",
-                            "minLength": 1
-                          },
-                          "target": {
-                            "oneOf": [
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "kind": {
-                                    "type": "string",
-                                    "enum": [
-                                      "header"
-                                    ]
-                                  },
-                                  "name": {
-                                    "type": "string",
-                                    "minLength": 1
-                                  },
-                                  "valuePrefix": {
-                                    "type": "string"
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "name"
-                                ],
-                                "additionalProperties": false
-                              },
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "kind": {
-                                    "type": "string",
-                                    "enum": [
-                                      "env-var"
-                                    ]
-                                  },
-                                  "name": {
-                                    "type": "string",
-                                    "minLength": 1
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "name"
-                                ],
-                                "additionalProperties": false
-                              },
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "kind": {
-                                    "type": "string",
-                                    "enum": [
-                                      "secret-file"
-                                    ]
-                                  },
-                                  "path": {
-                                    "type": "string",
-                                    "minLength": 1
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "path"
-                                ],
-                                "additionalProperties": false
-                              }
-                            ]
-                          }
-                        },
-                        "required": [
-                          "template",
-                          "target"
-                        ],
-                        "additionalProperties": false
-                      }
-                    },
                     "oauthConfig": {
                       "nullable": true,
                       "type": "object",
@@ -103405,7 +103068,6 @@
                     "localConfig",
                     "deploymentSpecYaml",
                     "userConfig",
-                    "mappingTemplates",
                     "oauthConfig",
                     "enterpriseManagedConfig",
                     "icon",
@@ -103941,86 +103603,6 @@
                     "type": "object",
                     "additionalProperties": {
                       "$ref": "#/components/schemas/UserConfigFieldInput"
-                    }
-                  },
-                  "mappingTemplates": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "template": {
-                          "type": "string",
-                          "minLength": 1
-                        },
-                        "target": {
-                          "oneOf": [
-                            {
-                              "type": "object",
-                              "properties": {
-                                "kind": {
-                                  "type": "string",
-                                  "enum": [
-                                    "header"
-                                  ]
-                                },
-                                "name": {
-                                  "type": "string",
-                                  "minLength": 1
-                                },
-                                "valuePrefix": {
-                                  "type": "string"
-                                }
-                              },
-                              "required": [
-                                "kind",
-                                "name"
-                              ]
-                            },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "kind": {
-                                  "type": "string",
-                                  "enum": [
-                                    "env-var"
-                                  ]
-                                },
-                                "name": {
-                                  "type": "string",
-                                  "minLength": 1
-                                }
-                              },
-                              "required": [
-                                "kind",
-                                "name"
-                              ]
-                            },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "kind": {
-                                  "type": "string",
-                                  "enum": [
-                                    "secret-file"
-                                  ]
-                                },
-                                "path": {
-                                  "type": "string",
-                                  "minLength": 1
-                                }
-                              },
-                              "required": [
-                                "kind",
-                                "path"
-                              ]
-                            }
-                          ]
-                        }
-                      },
-                      "required": [
-                        "template",
-                        "target"
-                      ]
                     }
                   },
                   "oauthConfig": {
@@ -104581,91 +104163,6 @@
                         "$ref": "#/components/schemas/UserConfigField"
                       }
                     },
-                    "mappingTemplates": {
-                      "default": [],
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "template": {
-                            "type": "string",
-                            "minLength": 1
-                          },
-                          "target": {
-                            "oneOf": [
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "kind": {
-                                    "type": "string",
-                                    "enum": [
-                                      "header"
-                                    ]
-                                  },
-                                  "name": {
-                                    "type": "string",
-                                    "minLength": 1
-                                  },
-                                  "valuePrefix": {
-                                    "type": "string"
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "name"
-                                ],
-                                "additionalProperties": false
-                              },
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "kind": {
-                                    "type": "string",
-                                    "enum": [
-                                      "env-var"
-                                    ]
-                                  },
-                                  "name": {
-                                    "type": "string",
-                                    "minLength": 1
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "name"
-                                ],
-                                "additionalProperties": false
-                              },
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "kind": {
-                                    "type": "string",
-                                    "enum": [
-                                      "secret-file"
-                                    ]
-                                  },
-                                  "path": {
-                                    "type": "string",
-                                    "minLength": 1
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "path"
-                                ],
-                                "additionalProperties": false
-                              }
-                            ]
-                          }
-                        },
-                        "required": [
-                          "template",
-                          "target"
-                        ],
-                        "additionalProperties": false
-                      }
-                    },
                     "oauthConfig": {
                       "nullable": true,
                       "type": "object",
@@ -104966,7 +104463,6 @@
                     "localConfig",
                     "deploymentSpecYaml",
                     "userConfig",
-                    "mappingTemplates",
                     "oauthConfig",
                     "enterpriseManagedConfig",
                     "icon",
@@ -107789,91 +107285,6 @@
                           "$ref": "#/components/schemas/UserConfigField"
                         }
                       },
-                      "mappingTemplates": {
-                        "default": [],
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "template": {
-                              "type": "string",
-                              "minLength": 1
-                            },
-                            "target": {
-                              "oneOf": [
-                                {
-                                  "type": "object",
-                                  "properties": {
-                                    "kind": {
-                                      "type": "string",
-                                      "enum": [
-                                        "header"
-                                      ]
-                                    },
-                                    "name": {
-                                      "type": "string",
-                                      "minLength": 1
-                                    },
-                                    "valuePrefix": {
-                                      "type": "string"
-                                    }
-                                  },
-                                  "required": [
-                                    "kind",
-                                    "name"
-                                  ],
-                                  "additionalProperties": false
-                                },
-                                {
-                                  "type": "object",
-                                  "properties": {
-                                    "kind": {
-                                      "type": "string",
-                                      "enum": [
-                                        "env-var"
-                                      ]
-                                    },
-                                    "name": {
-                                      "type": "string",
-                                      "minLength": 1
-                                    }
-                                  },
-                                  "required": [
-                                    "kind",
-                                    "name"
-                                  ],
-                                  "additionalProperties": false
-                                },
-                                {
-                                  "type": "object",
-                                  "properties": {
-                                    "kind": {
-                                      "type": "string",
-                                      "enum": [
-                                        "secret-file"
-                                      ]
-                                    },
-                                    "path": {
-                                      "type": "string",
-                                      "minLength": 1
-                                    }
-                                  },
-                                  "required": [
-                                    "kind",
-                                    "path"
-                                  ],
-                                  "additionalProperties": false
-                                }
-                              ]
-                            }
-                          },
-                          "required": [
-                            "template",
-                            "target"
-                          ],
-                          "additionalProperties": false
-                        }
-                      },
                       "oauthConfig": {
                         "nullable": true,
                         "type": "object",
@@ -108171,7 +107582,6 @@
                       "localConfig",
                       "deploymentSpecYaml",
                       "userConfig",
-                      "mappingTemplates",
                       "oauthConfig",
                       "enterpriseManagedConfig",
                       "icon",
@@ -108773,91 +108183,6 @@
                         "$ref": "#/components/schemas/UserConfigField"
                       }
                     },
-                    "mappingTemplates": {
-                      "default": [],
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "template": {
-                            "type": "string",
-                            "minLength": 1
-                          },
-                          "target": {
-                            "oneOf": [
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "kind": {
-                                    "type": "string",
-                                    "enum": [
-                                      "header"
-                                    ]
-                                  },
-                                  "name": {
-                                    "type": "string",
-                                    "minLength": 1
-                                  },
-                                  "valuePrefix": {
-                                    "type": "string"
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "name"
-                                ],
-                                "additionalProperties": false
-                              },
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "kind": {
-                                    "type": "string",
-                                    "enum": [
-                                      "env-var"
-                                    ]
-                                  },
-                                  "name": {
-                                    "type": "string",
-                                    "minLength": 1
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "name"
-                                ],
-                                "additionalProperties": false
-                              },
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "kind": {
-                                    "type": "string",
-                                    "enum": [
-                                      "secret-file"
-                                    ]
-                                  },
-                                  "path": {
-                                    "type": "string",
-                                    "minLength": 1
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "path"
-                                ],
-                                "additionalProperties": false
-                              }
-                            ]
-                          }
-                        },
-                        "required": [
-                          "template",
-                          "target"
-                        ],
-                        "additionalProperties": false
-                      }
-                    },
                     "oauthConfig": {
                       "nullable": true,
                       "type": "object",
@@ -109155,7 +108480,6 @@
                     "localConfig",
                     "deploymentSpecYaml",
                     "userConfig",
-                    "mappingTemplates",
                     "oauthConfig",
                     "enterpriseManagedConfig",
                     "icon",
@@ -109765,91 +109089,6 @@
                         "$ref": "#/components/schemas/UserConfigField"
                       }
                     },
-                    "mappingTemplates": {
-                      "default": [],
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "template": {
-                            "type": "string",
-                            "minLength": 1
-                          },
-                          "target": {
-                            "oneOf": [
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "kind": {
-                                    "type": "string",
-                                    "enum": [
-                                      "header"
-                                    ]
-                                  },
-                                  "name": {
-                                    "type": "string",
-                                    "minLength": 1
-                                  },
-                                  "valuePrefix": {
-                                    "type": "string"
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "name"
-                                ],
-                                "additionalProperties": false
-                              },
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "kind": {
-                                    "type": "string",
-                                    "enum": [
-                                      "env-var"
-                                    ]
-                                  },
-                                  "name": {
-                                    "type": "string",
-                                    "minLength": 1
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "name"
-                                ],
-                                "additionalProperties": false
-                              },
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "kind": {
-                                    "type": "string",
-                                    "enum": [
-                                      "secret-file"
-                                    ]
-                                  },
-                                  "path": {
-                                    "type": "string",
-                                    "minLength": 1
-                                  }
-                                },
-                                "required": [
-                                  "kind",
-                                  "path"
-                                ],
-                                "additionalProperties": false
-                              }
-                            ]
-                          }
-                        },
-                        "required": [
-                          "template",
-                          "target"
-                        ],
-                        "additionalProperties": false
-                      }
-                    },
                     "oauthConfig": {
                       "nullable": true,
                       "type": "object",
@@ -110147,7 +109386,6 @@
                     "localConfig",
                     "deploymentSpecYaml",
                     "userConfig",
-                    "mappingTemplates",
                     "oauthConfig",
                     "enterpriseManagedConfig",
                     "icon",

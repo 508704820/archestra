@@ -66,7 +66,6 @@ type SyncableCatalogFields = Pick<
   | "localConfig"
   | "deploymentSpecYaml"
   | "userConfig"
-  | "mappingTemplates"
   | "oauthConfig"
   | "enterpriseManagedConfig"
   | "icon"
@@ -1418,7 +1417,6 @@ function pickSyncableFields(parent: InternalMcpCatalog): SyncableCatalogFields {
     localConfig: parent.localConfig,
     deploymentSpecYaml: parent.deploymentSpecYaml,
     userConfig: parent.userConfig,
-    mappingTemplates: parent.mappingTemplates,
     oauthConfig: parent.oauthConfig,
     enterpriseManagedConfig: parent.enterpriseManagedConfig,
     icon: parent.icon,
