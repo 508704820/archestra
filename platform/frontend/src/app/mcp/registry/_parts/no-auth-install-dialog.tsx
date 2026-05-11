@@ -2,9 +2,10 @@
 
 import type { archestraApiTypes } from "@shared";
 import { Building2 } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { StandardFormDialog } from "@/components/standard-dialog";
 import { Button } from "@/components/ui/button";
+import { InstallPresetPicker } from "./install-preset-picker";
 import {
   type McpServerInstallScope,
   SelectMcpServerCredentialTypeAndTeams,
@@ -14,6 +15,8 @@ type CatalogItem =
   archestraApiTypes.GetInternalMcpCatalogResponses["200"][number];
 
 export interface NoAuthInstallResult {
+  /** Catalog id to install from — parent or selected preset. */
+  catalogId: string;
   /** Installation scope (personal, team, org) */
   scope: McpServerInstallScope;
   /** Team ID to assign the MCP server to (only when scope is "team") */
@@ -51,10 +54,22 @@ export function NoAuthInstallDialog({
     preselectedTeamId ?? null,
   );
   const [canInstall, setCanInstall] = useState(true);
+  const [selectedCatalogId, setSelectedCatalogId] = useState<string>(
+    catalogItem?.id ?? "",
+  );
+
+  useEffect(() => {
+    if (isOpen && catalogItem) setSelectedCatalogId(catalogItem.id);
+  }, [isOpen, catalogItem]);
 
   const handleInstall = useCallback(async () => {
-    await onInstall({ scope, teamId: selectedTeamId });
-  }, [onInstall, scope, selectedTeamId]);
+    if (!selectedCatalogId) return;
+    await onInstall({
+      catalogId: selectedCatalogId,
+      scope,
+      teamId: selectedTeamId,
+    });
+  }, [onInstall, scope, selectedTeamId, selectedCatalogId]);
 
   const handleClose = useCallback(() => {
     setSelectedTeamId(null);
@@ -98,6 +113,11 @@ export function NoAuthInstallDialog({
         ) : null
       }
     >
+      <InstallPresetPicker
+        parent={catalogItem}
+        value={selectedCatalogId}
+        onChange={setSelectedCatalogId}
+      />
       <SelectMcpServerCredentialTypeAndTeams
         onTeamChange={setSelectedTeamId}
         onScopeChange={setScope}

@@ -29,6 +29,7 @@ import {
   AvatarGroupCount,
 } from "@/components/ui/avatar";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { PermissionButton } from "@/components/ui/permission-button";
@@ -45,7 +46,10 @@ import { useBulkAssignTools } from "@/lib/agent-tools.query";
 import { useHasPermissions } from "@/lib/auth/auth.query";
 import { authClient } from "@/lib/clients/auth/auth-client";
 import { useFeature } from "@/lib/config/config.query";
-import { useCatalogTools } from "@/lib/mcp/internal-mcp-catalog.query";
+import {
+  useCatalogPresets,
+  useCatalogTools,
+} from "@/lib/mcp/internal-mcp-catalog.query";
 import { useMcpServers, useMcpServerTools } from "@/lib/mcp/mcp-server.query";
 import { useTeams } from "@/lib/teams/team.query";
 import {
@@ -132,6 +136,8 @@ export function McpServerCard({
     !isBuiltin ? (installedServer?.id ?? null) : null,
   );
   const { data: catalogTools } = useCatalogTools(isBuiltin ? item.id : null);
+  const { data: presets = [] } = useCatalogPresets(!isBuiltin ? item.id : null);
+  const presetCount = presets.length;
 
   const tools = isBuiltin ? catalogTools : mcpServerTools;
 
@@ -858,6 +864,11 @@ export function McpServerCard({
                   {item.name}
                 </span>
               </TruncatedTooltip>
+              {presetCount > 0 && (
+                <Badge variant="outline" className="shrink-0 text-[10px]">
+                  +{presetCount} preset{presetCount === 1 ? "" : "s"}
+                </Badge>
+              )}
             </div>
             {item.description && (
               <p className="text-xs text-muted-foreground line-clamp-2">

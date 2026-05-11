@@ -610,7 +610,7 @@ export function InternalMCPCatalog({
     setInstallingItemId(catalogItem.id);
     await installMutation.mutateAsync({
       name: catalogItem.name,
-      catalogId: catalogItem.id,
+      catalogId: result.catalogId,
       scope: result.scope,
       teamId:
         result.scope === "team" ? (result.teamId ?? undefined) : undefined,
@@ -730,7 +730,7 @@ export function InternalMCPCatalog({
     setInstallingItemId(localServerCatalogItem.id);
     const result = await installMutation.mutateAsync({
       name: localServerCatalogItem.name,
-      catalogId: localServerCatalogItem.id,
+      catalogId: installResult.catalogId,
       environmentValues: installResult.environmentValues,
       userConfigValues: installResult.userConfigValues,
       isByosVault: installResult.isByosVault,
@@ -784,7 +784,7 @@ export function InternalMCPCatalog({
 
     await installMutation.mutateAsync({
       name: catalogItem.name,
-      catalogId: catalogItem.id,
+      catalogId: result.catalogId,
       ...credentialPayload,
       scope: result.scope,
       teamId:

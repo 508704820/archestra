@@ -31,6 +31,7 @@ import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { useFeature } from "@/lib/config/config.query";
 import { useTeamsWithVaultFolders } from "@/lib/teams/team.query";
+import { InstallPresetPicker } from "./install-preset-picker";
 import {
   type McpServerInstallScope,
   SelectMcpServerCredentialTypeAndTeams,
@@ -72,6 +73,8 @@ const markdownComponents: Components = {
 };
 
 export interface LocalServerInstallResult {
+  /** Catalog id to install from — parent or selected preset. */
+  catalogId: string;
   environmentValues: Record<string, string>;
   userConfigValues?: Record<string, string>;
   /** Installation scope (personal, team, org) */
@@ -134,20 +137,31 @@ export function LocalServerInstallDialog({
   const [serviceAccount, setServiceAccount] = useState<string | undefined>(
     catalogItem?.localConfig?.serviceAccount,
   );
+  const [selectedCatalogId, setSelectedCatalogId] = useState<string>(
+    catalogItem?.id ?? "",
+  );
+
+  useEffect(() => {
+    if (isOpen && catalogItem) setSelectedCatalogId(catalogItem.id);
+  }, [isOpen, catalogItem]);
   const userConfig =
     (catalogItem?.userConfig as UserConfigType | null | undefined) || {};
   const promptableUserConfig = Object.fromEntries(
     Object.entries(userConfig).filter(([_fieldName, fieldConfig]) => {
-      return fieldConfig.promptOnInstallation !== false;
+      return (
+        fieldConfig.promptOnInstallation !== false &&
+        !fieldConfig.promptOnPreset
+      );
     }),
   );
   // Extract environment variables that need prompting during installation.
   // Multi-tenant catalogs share one deployment, so env vars are catalog-level
   // (set once by an admin). Per-caller install never prompts for env values.
+  // Preset-scoped env vars are admin-set per preset and never prompted.
   const promptedEnvVars = catalogItem?.multitenant
     ? []
     : catalogItem?.localConfig?.environment?.filter(
-        (env) => env.promptOnInstallation !== false,
+        (env) => env.promptOnInstallation !== false && !env.promptOnPreset,
       ) || [];
 
   // Separate secret vs non-secret env vars
@@ -327,6 +341,7 @@ export function LocalServerInstallDialog({
     }
 
     await onConfirm({
+      catalogId: selectedCatalogId || catalogItem?.id || "",
       environmentValues: finalEnvironmentValues,
       userConfigValues: finalUserConfigValues,
       scope,
@@ -509,6 +524,14 @@ export function LocalServerInstallDialog({
             assignments.
           </AlertDescription>
         </Alert>
+      )}
+
+      {!isReinstall && !isReauth && catalogItem && (
+        <InstallPresetPicker
+          parent={catalogItem}
+          value={selectedCatalogId}
+          onChange={setSelectedCatalogId}
+        />
       )}
 
       <SelectMcpServerCredentialTypeAndTeams

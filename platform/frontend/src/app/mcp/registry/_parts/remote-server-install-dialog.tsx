@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select";
 import { useFeature } from "@/lib/config/config.query";
 import { useTeamsWithVaultFolders } from "@/lib/teams/team.query";
+import { InstallPresetPicker } from "./install-preset-picker";
 import {
   type McpServerInstallScope,
   SelectMcpServerCredentialTypeAndTeams,
@@ -40,6 +41,7 @@ type UserConfigType = Record<
     title: string;
     description: string;
     promptOnInstallation?: boolean;
+    promptOnPreset?: boolean;
     required?: boolean;
     default?: string | number | boolean | Array<string>;
     multiple?: boolean;
@@ -50,6 +52,8 @@ type UserConfigType = Record<
 >;
 
 export interface RemoteServerInstallResult {
+  /** Catalog id to install from — parent or selected preset. */
+  catalogId: string;
   metadata: Record<string, unknown>;
   /** Installation scope (personal, team, org) */
   scope: McpServerInstallScope;
@@ -97,6 +101,13 @@ export function RemoteServerInstallDialog({
     orgOnly ? "org" : "personal",
   );
   const [canInstall, setCanInstall] = useState(true);
+  const [selectedCatalogId, setSelectedCatalogId] = useState<string>(
+    catalogItem?.id ?? "",
+  );
+
+  useEffect(() => {
+    if (isOpen && catalogItem) setSelectedCatalogId(catalogItem.id);
+  }, [isOpen, catalogItem]);
 
   // Vault team selection (separate from install team for personal + BYOS)
   const [vaultTeamId, setVaultTeamId] = useState<string | null>(null);
@@ -112,7 +123,10 @@ export function RemoteServerInstallDialog({
   const userConfig =
     (catalogItem?.userConfig as UserConfigType | null | undefined) || {};
   const hasPromptSensitiveFields = Object.values(userConfig).some(
-    (config) => config.sensitive && config.promptOnInstallation !== false,
+    (config) =>
+      config.sensitive &&
+      config.promptOnInstallation !== false &&
+      !config.promptOnPreset,
   );
 
   // Helper to update vault secret for a specific field
@@ -159,7 +173,10 @@ export function RemoteServerInstallDialog({
       const metadata: Record<string, unknown> = {};
 
       for (const [fieldName, fieldConfig] of Object.entries(userConfig)) {
-        if (fieldConfig.promptOnInstallation === false) {
+        if (
+          fieldConfig.promptOnInstallation === false ||
+          fieldConfig.promptOnPreset
+        ) {
           continue;
         }
 
@@ -189,6 +206,7 @@ export function RemoteServerInstallDialog({
       }
 
       await onConfirm(catalogItem, {
+        catalogId: selectedCatalogId || catalogItem.id,
         metadata,
         scope,
         teamId: selectedTeamId,
@@ -220,7 +238,10 @@ export function RemoteServerInstallDialog({
 
   const promptableUserConfig = Object.fromEntries(
     Object.entries(userConfig).filter(([_fieldName, fieldConfig]) => {
-      return fieldConfig.promptOnInstallation !== false;
+      return (
+        fieldConfig.promptOnInstallation !== false &&
+        !fieldConfig.promptOnPreset
+      );
     }),
   );
   const hasConfig = Object.keys(promptableUserConfig).length > 0;
@@ -314,6 +335,14 @@ export function RemoteServerInstallDialog({
             assignments.
           </AlertDescription>
         </Alert>
+      )}
+
+      {!isReauth && (
+        <InstallPresetPicker
+          parent={catalogItem}
+          value={selectedCatalogId}
+          onChange={setSelectedCatalogId}
+        />
       )}
 
       <SelectMcpServerCredentialTypeAndTeams

@@ -22,6 +22,7 @@ import {
   EmptyMedia,
 } from "@/components/ui/empty";
 import { TruncatedTooltip } from "@/components/ui/truncated-tooltip";
+import { useCatalogPresets } from "@/lib/mcp/internal-mcp-catalog.query";
 import { cn } from "@/lib/utils";
 import {
   computeDeploymentStatusSummary,
@@ -32,11 +33,13 @@ import { EditCatalogContent } from "./edit-catalog-dialog";
 import { ManageUsersContent } from "./manage-users-dialog";
 import { McpLogsContent, type McpLogsTab } from "./mcp-logs-dialog";
 import type { CatalogItemWithOptionalLabel } from "./mcp-server-card";
+import { PresetsSection } from "./presets-section";
 import { YamlConfigContent } from "./yaml-config-dialog";
 
 type SettingsPage =
   | "configuration"
   | "connections"
+  | "presets"
   | "debug-logs"
   | "debug-inspector"
   | "debug-shell"
@@ -94,6 +97,7 @@ const DEBUG_TAB_MAP: Record<string, McpLogsTab> = {
 const PAGE_TITLES: Record<SettingsPage, string> = {
   configuration: "Configuration",
   connections: "Credentials",
+  presets: "Presets",
   "debug-logs": "Logs",
   "debug-inspector": "Inspector",
   "debug-shell": "Shell",
@@ -135,10 +139,19 @@ export function McpServerSettingsDialog({
   onDelete,
 }: McpServerSettingsDialogProps) {
   const isBuiltin = variant === "builtin";
+  const { data: presets = [] } = useCatalogPresets(isBuiltin ? null : item.id);
+  const showPresets = !isBuiltin;
 
   const navItems: NavItemDef[] = [];
   if (!isBuiltin) {
     navItems.push({ id: "configuration", label: "Configuration" });
+  }
+  if (showPresets) {
+    navItems.push({
+      id: "presets",
+      label: "Presets",
+      badge: presets.length,
+    });
   }
   if (showConnections) {
     navItems.push({
@@ -353,6 +366,12 @@ export function McpServerSettingsDialog({
                   onDirtyChange={setIsConfigDirty}
                   submitRef={configSubmitRef}
                 />
+              )}
+
+              {validPage === "presets" && showPresets && (
+                <div className="flex-1 overflow-y-auto p-6">
+                  <PresetsSection cat={item} />
+                </div>
               )}
 
               {validPage === "connections" && showConnections && (
