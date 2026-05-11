@@ -64,24 +64,21 @@ export async function evaluateIfContextIsTrusted(
   let unsafeContextBoundary: UnsafeContextBoundary | undefined;
 
   // If agent configured to consider context untrusted from the beginning,
-  // mark context as untrusted immediately and skip evaluation
+  // mark context as untrusted but still evaluate Tool Result Policies.
+  // Previously this returned early, which skipped Tool Result Policy evaluation
+  // entirely — a security bypass (see archestra-ai/archestra#4225).
   if (considerContextUntrusted) {
     logger.debug(
       { agentId },
       "[trustedData] evaluateIfContextIsTrusted: context marked untrusted by agent config",
     );
-    return {
-      toolResultUpdates: {},
-      contextIsTrusted: false,
-      usedDualLlm: false,
-      dualLlmAnalyses: [],
-      unsafeContextBoundary: {
-        kind: "preexisting_untrusted",
-        reason:
-          initialUntrustedReason ??
-          UNSAFE_CONTEXT_BOUNDARY_REASON.agentConfiguredUntrusted,
-      },
+    hasUntrustedData = true;
+    unsafeContextBoundary = {
+      kind: "preexisting_untrusted",
+      reason:
+        initialUntrustedReason ?? UNSAFE_CONTEXT_BOUNDARY_REASON.agentConfiguredUntrusted,
     };
+    // Do NOT return early — Tool Result Policies must still be evaluated below.
   }
 
   // First, collect all tool calls from all messages
