@@ -68,6 +68,29 @@ vi.mock("@/components/ai-elements/prompt-input", () => ({
       {children}
     </button>
   ),
+  PromptInputCommand: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="prompt-command">{children}</div>
+  ),
+  PromptInputCommandEmpty: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
+  PromptInputCommandGroup: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
+  PromptInputCommandItem: ({
+    children,
+    onSelect,
+  }: {
+    children: React.ReactNode;
+    onSelect?: () => void;
+  }) => (
+    <button type="button" onClick={onSelect}>
+      {children}
+    </button>
+  ),
+  PromptInputCommandList: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
   PromptInputFooter: ({ children }: { children: React.ReactNode }) => (
     <div>{children}</div>
   ),
@@ -90,7 +113,7 @@ vi.mock("@/components/ai-elements/prompt-input", () => ({
     <div data-testid="prompt-tools">{children}</div>
   ),
   usePromptInputController: () => ({
-    textInput: { setInput: vi.fn() },
+    textInput: { value: "", setInput: vi.fn(), clear: vi.fn() },
     attachments: { files: [] },
   }),
   usePromptInputAttachments: () => ({

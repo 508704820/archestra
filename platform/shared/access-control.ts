@@ -682,6 +682,9 @@ export const requiredEndpointPermissionsMap: Partial<
   [RouteId.DeleteChatConversation]: {
     chat: ["delete"],
   },
+  [RouteId.CompactChatConversation]: {
+    chat: ["update"],
+  },
   [RouteId.GenerateChatConversationTitle]: {
     chat: ["update"],
   },
